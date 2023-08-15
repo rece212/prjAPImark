@@ -12,6 +12,9 @@ import com.google.gson.Gson
 import java.net.URL
 import java.util.concurrent.Executors
 data class PostUser(var ID: String, var Amount: String,var PracticeID:String)
+data class Received(var received_ID:String,
+                    var received_Amount:String,var received_PracticeID:String,
+                    var message:String )
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,10 +48,12 @@ class MainActivity : AppCompatActivity() {
             val (_, _, result) = "https://opsc.azurewebsites.net/Add.php".httpPost()
                 .jsonBody(Gson().toJson(user).toString())
                 .responseString()
+            val Json = "["+result.component1()+"]"
+            val userList = Gson().fromJson(Json,Array<Received>::class.java).toList()
 
             Handler(Looper.getMainLooper()).post{
                 var Text = findViewById<TextView>(R.id.txtOutput)
-                Text.setText(result.toString())
+                Text.setText(userList.toString())
             }
 
         }
